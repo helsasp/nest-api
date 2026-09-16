@@ -31,5 +31,24 @@ export class FoodService {
     })
     .all();
 }
+
+async delete(id: number, userId: number) {
+  const food = await this.prisma.food
+    .where({
+      id,
+      userId,
+    })
+    .first();
+
+  if (!food) {
+    throw new Error('Food not found or you do not have permission to delete it');
+  }
+
+  return this.prisma.food
+    .where({
+      id,
+    })
+    .delete();
+}
 }
 

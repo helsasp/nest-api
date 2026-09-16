@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Delete, Param, Request, UseGuards } from '@nestjs/common';
 import { FoodService } from './food.service.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 
@@ -26,5 +26,14 @@ export class FoodController {
   findAll(@Request() req: any) {
     return this.foodService.findAll(req.user.userId);
   }
-  
+
+@UseGuards(JwtAuthGuard)
+@Delete(':id')
+delete(
+  @Param('id') id: string,
+  @Request() req: any,
+) {
+  return this.foodService.delete(Number(id), req.user.userId);
+}   
 }
+
