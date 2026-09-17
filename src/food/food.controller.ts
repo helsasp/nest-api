@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Delete, Param, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Delete, Patch, Param, Request, UseGuards } from '@nestjs/common';
 import { FoodService } from './food.service.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 
@@ -35,5 +35,22 @@ delete(
 ) {
   return this.foodService.delete(Number(id), req.user.userId);
 }   
+
+@UseGuards(JwtAuthGuard)
+@Patch(':id')
+update(
+  @Param('id') id: string,
+  @Body()
+  body: {
+    name?: string;
+    description?: string;
+    price?: number;
+    category?: string;
+  },
+  @Request() req: any,
+) {
+  return this.foodService.update(Number(id), body, req.user.userId);  
+
+}
 }
 
