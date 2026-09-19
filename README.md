@@ -1,114 +1,281 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Food API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Simple backend REST API built with **NestJS** for managing users and food data. The API uses **PostgreSQL** as the SQL database, **Prisma ORM** for database access, and **JWT** for authentication.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Requirements
 
-## Project setup
+This project fulfills the following requirements:
 
-```bash
-$ npm install
+* Minimum 2 related CRUD operations
+* SQL database using PostgreSQL
+* JWT-based API authentication
+* E2E testing for JWT authentication
+* Modular project architecture
+
+---
+
+## Features
+
+### Authentication
+
+* User registration
+* User login
+* JWT access token generation
+* JWT-protected API endpoints
+
+### Food Management
+
+* Create food
+* Read foods
+* Update food
+* Delete food
+
+Food data is associated with the authenticated user.
+
+---
+
+## Project Architecture
+
+### Modular Architecture
+
+This project uses **Modular Architecture** with separation of responsibilities between **Controller, Service, and ORM**.
+
+The application is organized into feature-based modules:
+
+```text
+src/
+├── auth/
+│   ├── auth.module.ts
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   └── ...
+│
+├── food/
+│   ├── food.module.ts
+│   ├── food.controller.ts
+│   ├── food.service.ts
+│   └── ...
+│
+├── prisma/
+│   └── ...
+│
+├── app.module.ts
+└── main.ts
 ```
 
-## Compile and run the project
+### Why Modular Architecture?
 
-```bash
-# development
-$ npm run start
+Modular Architecture is used because it:
 
-# watch mode
-$ npm run start:dev
+* Organizes the application based on features.
+* Separates responsibilities between components.
+* Makes the code easier to maintain and modify.
 
-# production mode
-$ npm run start:prod
+---
+
+## Database
+
+The application uses **PostgreSQL** as the SQL database with **Prisma ORM**.
+
+The main relationship is:
+
+```text
+User
+ └── Food
 ```
 
-## Run tests
+One user can have multiple food records.
+
+Database schema changes are managed using Prisma migrations.
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma migrate dev
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## API Endpoints
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+
+Base URL:
+
+```text
+http://localhost:3000
+```
+
+| Method | Endpoint         | Authentication | Description       |
+| ------ | ---------------- | -------------- | ----------------- |
+| POST   | `/auth/register` | No             | Register a user   |
+| POST   | `/auth/login`    | No             | Login and get JWT |
+| GET    | `/foods`         | JWT            | Get all foods     |
+| POST   | `/foods`         | JWT            | Create a food     |
+| PATCH  | `/foods/:id`     | JWT            | Update a food     |
+| DELETE | `/foods/:id`     | JWT            | Delete a food     |
+
+### Authentication
+
+#### Register
+
+```http
+POST /auth/register
+```
+
+Request body:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+#### Login
+
+```http
+POST /auth/login
+```
+
+Request body:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+Response:
+
+```json
+{
+  "access_token": "JWT_TOKEN"
+}
+```
+
+
+---
+
+## Food API
+
+All food endpoints require JWT authentication.
+
+### Get All Foods
+
+```http
+GET /foods
+```
+
+---
+
+### Create Food
+
+```http
+POST /foods
+```
+
+Request body:
+
+```json
+{
+  "name": "Fried Rice",
+  "description": "Indonesian fried rice",
+  "price": 25000,
+  "category" : "Lunch"
+}
+```
+
+---
+
+### Update Food
+
+```http
+PATCH /foods/:id
+```
+
+Request body:
+
+```json
+{
+  "name": "Special Fried Rice",
+  "description": "Fried rice with egg and chicken",
+  "price": 30000
+  "category" : "Dinner"
+}
+```
+
+---
+
+### Delete Food
+
+```http
+DELETE /foods/:id
+```
+---
+
+## Installation & Setup
+
+### 1. Install Dependencies
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 2. Configure Environment Variables
 
-## Observability
+Create a `.env` file:
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/food_api"
+JWT_SECRET="your-secret-key"
+```
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+### 3. Run Database Migration
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+```bash
+npx prisma migrate dev
+```
 
-## Resources
+### 4. Start the Application
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+npm run start:dev
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+The API will be available at:
 
-## Support
+```text
+http://localhost:3000
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## E2E Testing
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The project includes **End-to-End (E2E) testing** using **Jest and Supertest**.
 
-## License
+The E2E tests verify JWT authentication by testing:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. User authentication.
+2. JWT token generation.
+3. Access to protected endpoints without a token.
+4. Access to protected endpoints with a valid JWT token.
+
+Run the E2E tests:
+
+```bash
+npm run test:e2e
+```
+
+---
+
+
+## Summary
+
+This project implements a simple authenticated REST API using:
+
+**NestJS + PostgreSQL + Prisma + JWT**
+
+The application provides user authentication and CRUD operations for food data. It follows **Modular Architecture** with separation of concerns between **Module, Controller, Service, and ORM**, and includes E2E testing to verify JWT-protected API access.
